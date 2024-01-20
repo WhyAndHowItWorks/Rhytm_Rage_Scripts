@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Cancel : MonoBehaviour
 {
-    public NoteTrack nt;
+    public NoteTrack nt; 
     public EditorNoteFactory enf;
 
     public List<CancelComand> History = new List<CancelComand>();

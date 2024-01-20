@@ -10,7 +10,7 @@ public class Background_boxes : MonoBehaviour
     public Transform FinalDot;
     public GameObject Box;
     public bool UseList;
-    public List<GameObject> RandomShit = new List<GameObject>();
+    public List<GameObject> RandomFigures = new List<GameObject>();
 
     public List<GameObject> deltaBoxes = new List<GameObject>();
 
@@ -19,7 +19,7 @@ public class Background_boxes : MonoBehaviour
         get
         {
             counter++;
-            if (counter >= RandomShit.Count)
+            if (counter >= RandomFigures.Count)
             {
                 counter = 0;
             }
@@ -41,7 +41,7 @@ public class Background_boxes : MonoBehaviour
                 }
                 else 
                 {
-                    deltaBoxes.Add(Instantiate(RandomShit[Counter], new Vector3(i, transform.position.y, transform.position.z), transform.rotation));
+                    deltaBoxes.Add(Instantiate(RandomFigures[Counter], new Vector3(i, transform.position.y, transform.position.z), transform.rotation));
                 }
                 
             }
@@ -71,7 +71,7 @@ public class Background_boxes : MonoBehaviour
             }
             else
             {
-                deltaBoxes.Add(Instantiate(RandomShit[Counter], transform.position, transform.rotation));
+                deltaBoxes.Add(Instantiate(RandomFigures[Counter], transform.position, transform.rotation));
             }
         }
     }
