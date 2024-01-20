@@ -27,7 +27,7 @@ public class Conveyorist : Enemy
                 Shoot();
                 if (!Pressed)// Нанести урон
                 {
-                    DoDamageToPlayer(Damage);
+                    DoDamageToPlayer(FinalDamage);
                 }
             }
 
@@ -39,7 +39,7 @@ public class Conveyorist : Enemy
         Shoot();
         if (!deltapr)// Нанести урон
         {
-            DoDamageToPlayer(Damage);
+            DoDamageToPlayer(FinalDamage);
         }
     }
     public override void OnBirth()
@@ -63,9 +63,9 @@ public class Conveyorist : Enemy
         g.GetComponent<SpriteRenderer>().sprite = ProjSkins[Random.Range(0, ProjSkins.Count)];
         PlayAnim("Conveyor", "Shoot");
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking damage", "TakeDamage");
+        base.OnTakingDamage();
+        PlayAnim("Taking damage", "OnTakingDamage");
     }
 }

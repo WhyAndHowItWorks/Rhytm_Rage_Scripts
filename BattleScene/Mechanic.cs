@@ -26,7 +26,7 @@ public class Mechanic : Enemy
                 Shoot();
                 if (!Pressed)// Нанести урон
                 {
-                    DoDamageToPlayer(Damage);
+                    DoDamageToPlayer(FinalDamage);
                 }
             }
 
@@ -43,7 +43,7 @@ public class Mechanic : Enemy
         Shoot();
         if (!deltapr)// Нанести урон
         {
-            DoDamageToPlayer(Damage);
+            DoDamageToPlayer(FinalDamage);
         }
     }
     public override void OnBirth()
@@ -63,9 +63,9 @@ public class Mechanic : Enemy
         g.GetComponent<SpriteRenderer>().sprite = ProjSprites[Random.Range(0, ProjSprites.Count)];
         PlayAnim("Shooting", "Shoot");
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
+        base.OnTakingDamage();
 
         PlayAnim("Taking damage", "TakingDamage");
     }

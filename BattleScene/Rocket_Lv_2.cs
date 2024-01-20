@@ -50,7 +50,7 @@ public class Rocket_Lv_2 : WeaponLevel
         }
         else 
         {
-            tr = rl.rt.es.EnemyPositions[e.MyNumber].transform;
+            tr = rl.rt.es.EnemyPositions[e.EnemyPlace].transform;
             r.Target = e;
             r.Targeted = true;
         }

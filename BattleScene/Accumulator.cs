@@ -22,11 +22,11 @@ public class Accumulator : Enemy
             {
                 if (charges < oldcharges)
                 {
-                    CastModEffectWithPeriod(EffectType.ChargeDown, MyNumber);
+                    CastModEffectWithPeriod(EffectType.ChargeDown, EnemyPlace);
                 }
                 else 
                 {
-                    CastModEffectWithPeriod(EffectType.ChargeUp, MyNumber);
+                    CastModEffectWithPeriod(EffectType.ChargeUp, EnemyPlace);
                 }
                 int chargesbars = Convert.ToInt32(Mathf.Round(charges / 5f));
                 for (int i = 0; i < BatteryCharges.Count; i++)
@@ -202,10 +202,10 @@ public class Accumulator : Enemy
     }
 
    
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking Damage", "Take Damage");
+        base.OnTakingDamage();
+        PlayAnim("Taking FinalDamage", "Take FinalDamage");
 
     }
 }

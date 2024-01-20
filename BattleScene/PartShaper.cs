@@ -54,15 +54,15 @@ public class PartShaper : Enemy
     {
         if (!deltapr)// Нанести урон
         {
-            DoDamageToPlayer(Damage, 0.4f);
+            DoDamageToPlayer(FinalDamage, 0.4f);
         }
         GameObject g = ThrowProjectileToGG(Projectile, 0.4f, ProjectileSpawn);
         g.GetComponent<SpriteRenderer>().sprite = ProjSprites[Random.Range(0, ProjSprites.Count)];
         PlayAnim("Throws detail", "Shoot");
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking damage", "Taking Damage");
+        base.OnTakingDamage();
+        PlayAnim("Taking damage", "Taking FinalDamage");
     }
 }

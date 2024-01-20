@@ -28,7 +28,7 @@ public class Packer : Enemy
                 Shoot();
                 if (!Pressed)// Нанести урон
                 {
-                    DoDamageToPlayer(Damage);
+                    DoDamageToPlayer(FinalDamage);
                 }
             }
            
@@ -45,7 +45,7 @@ public class Packer : Enemy
         Shoot();
         if (!deltapr)// Нанести урон
         {
-            DoDamageToPlayer(Damage,0.4f);
+            DoDamageToPlayer(FinalDamage,0.4f);
         }
     }
     public override void OnBirth()
@@ -66,10 +66,10 @@ public class Packer : Enemy
         g.transform.rotation = Quaternion.Euler(0, 0, -90);
         PlayAnim("Shooting", "Shoot");
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking Damage", "TakingDamage");
+        base.OnTakingDamage();
+        PlayAnim("Taking FinalDamage", "TakingDamage");
     }
 
 }

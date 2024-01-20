@@ -55,13 +55,13 @@ public class Blanker : Enemy
         PlayAnim("Attack", "Shoot");
         if (!deltapr)// Нанести урон
         {
-            DoDamageToPlayer(Damage, 0.25f);
+            DoDamageToPlayer(FinalDamage, 0.25f);
         }
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking damage", "TakeDamage");
+        base.OnTakingDamage();
+        PlayAnim("Taking damage", "OnTakingDamage");
     }
     
 }

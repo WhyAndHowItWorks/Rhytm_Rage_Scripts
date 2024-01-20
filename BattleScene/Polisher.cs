@@ -45,7 +45,7 @@ public class Polisher : Enemy
         get { return charges; }
         set {
             charges = value;
-            Damage = StartDamage + charges * DamagePerCharge;
+            FinalDamage = StartDamage + charges * DamagePerCharge;
         }
     }
     public int charges;
@@ -109,7 +109,7 @@ public class Polisher : Enemy
         HealthBar.gameObject.SetActive(false);
         
         Invoke("un", 0.8f);
-        Invoke("EnemyComesToBattle", StartInvisibleTime);
+        Invoke("OnEnemyComesToBattle", StartInvisibleTime);
         rt.es.DoEnemyEvent(this, EnemyAction.Created);
         rt.nt.PhaseChangedEvent += PhaseChanged;
         if (rt.nt.IsGgFhase)
@@ -196,16 +196,16 @@ public class Polisher : Enemy
         // Нанесение дамага если не прожал
         if (!Pressed)
         {
-            DoDamageToPlayer(Damage, ProjTimeToFly);
+            DoDamageToPlayer(FinalDamage, ProjTimeToFly);
         }
         
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-      base.TakeDamage();
+      base.OnTakingDamage();
       if (!IsPolishing)
       {
-      PlayAnim("Taking damage", "Take Damage");
+      PlayAnim("Taking damage", "Take FinalDamage");
       }
         
 

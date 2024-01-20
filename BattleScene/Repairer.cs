@@ -194,10 +194,10 @@ public class Repairer : Enemy
         
         return false;
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking Damage", "TakingDamage");
+        base.OnTakingDamage();
+        PlayAnim("Taking FinalDamage", "TakingDamage");
     }
     public override void OnBirth()
     {

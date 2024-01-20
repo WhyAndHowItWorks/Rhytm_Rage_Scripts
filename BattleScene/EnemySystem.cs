@@ -56,7 +56,7 @@ public class EnemySystem : MonoBehaviour
         GameObject g = Instantiate(EnemiesPrefab[Type], EnemyPositions[Plase].transform.position, EnemyPositions[Plase].transform.rotation);
         EnemiesOnPositions[Plase] = g;
         g.GetComponent<Enemy>().rt = rt;
-        g.GetComponent<Enemy>().MyNumber = Plase;
+        g.GetComponent<Enemy>().EnemyPlace = Plase;
         return g;
     }
     public GameObject SpawnEnemy(GameObject Type, int Plase)
@@ -64,7 +64,7 @@ public class EnemySystem : MonoBehaviour
         GameObject g = Instantiate(Type, EnemyPositions[Plase].transform.position, EnemyPositions[Plase].transform.rotation);
         EnemiesOnPositions[Plase] = g;
         g.GetComponent<Enemy>().rt = rt;
-        g.GetComponent<Enemy>().MyNumber = Plase;
+        g.GetComponent<Enemy>().EnemyPlace = Plase;
         return g;
     }
     /// <summary>
@@ -108,7 +108,7 @@ public class EnemySystem : MonoBehaviour
             EnemiesOnPositions[i] = g;
 
             g.GetComponent<Enemy>().rt = rt;
-            g.GetComponent<Enemy>().MyNumber = i;
+            g.GetComponent<Enemy>().EnemyPlace = i;
             g.GetComponent<Enemy>().Index = Type;
             if (Type == 12 && !rt.rp.IsCustomLevel)
             {
@@ -137,7 +137,7 @@ public class EnemySystem : MonoBehaviour
                     g.DamageMultiplayer++;
                     
                     g.HealthBar.StackCount = g.DamageMultiplayer;
-                    g.CastModEffectWithPeriod(EffectType.DamageUp, g.MyNumber);
+                    g.CastModEffectWithPeriod(EffectType.DamageUp, g.EnemyPlace);
                     break;
                 }
             }

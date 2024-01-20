@@ -47,10 +47,10 @@ public class Loader : Enemy
             }
         }
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking damage", "TakeDamage");
+        base.OnTakingDamage();
+        PlayAnim("Taking damage", "OnTakingDamage");
 
 
     }
@@ -87,7 +87,7 @@ public class Loader : Enemy
         tempBox.GetComponent<LoaderBox>().Invoke("ProjectileDestroy", 0.1f);
         if (!Pressed)
         {
-            DoDamageToPlayer(Damage);
+            DoDamageToPlayer(FinalDamage);
         }
     }
     public void ThrowBoxToBuildBarrier()

@@ -431,22 +431,22 @@ public class BOSS : Enemy
 
 
     
-    public override void Shielded()
+    public override void OnShielded()
     {
         // Спавн эффекта щита
         ShieldPole.GetComponent<Animator>().SetTrigger("BLINK");
     }
     
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
         if (!IsDead)
         {
 
 
-            base.TakeDamage();
+            base.OnTakingDamage();
             if (an.GetCurrentAnimatorStateInfo(0).IsName("Taking damage_1"))
             {
-                an.SetTrigger("TakeDamage");
+                an.SetTrigger("OnTakingDamage");
             }
             else { an.Play("Taking damage_1"); }
         }
@@ -467,7 +467,7 @@ public class BOSS : Enemy
     
         
     
-    public override void EnemyArrived()
+    public override void OnEnemyArrived()
     {
         HealthBar.transform.position = HealthBarSpawnPoint.position;
         HealthBar.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);

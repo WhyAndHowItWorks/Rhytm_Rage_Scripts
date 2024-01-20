@@ -55,7 +55,7 @@ public class LaserMark : Enemy
                     Shoot();
                     if (!Pressed)
                     {
-                        DoDamageToPlayer(Damage);
+                        DoDamageToPlayer(FinalDamage);
                     }
                 }
             }
@@ -116,10 +116,10 @@ public class LaserMark : Enemy
         }
     }
     
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking Damage", "TakeDamage");
+        base.OnTakingDamage();
+        PlayAnim("Taking FinalDamage", "OnTakingDamage");
     }
     public override void OnDeath()
     {
@@ -140,7 +140,7 @@ public class LaserMark : Enemy
     {
             if (!Pressed)
             {
-                DoDamageToPlayer(Damage);
+                DoDamageToPlayer(FinalDamage);
             }
         if (!IsShooting && !rt.nt.IsGgFhase && nfg.index != SliderDotType.End)
         {

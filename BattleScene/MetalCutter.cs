@@ -99,7 +99,7 @@ public class MetalCutter : Enemy
                         Shoot();
                         if (!Pressed)
                         {
-                            DoDamageToPlayer(Damage);
+                            DoDamageToPlayer(FinalDamage);
                         }
                     }
                 }
@@ -111,7 +111,7 @@ public class MetalCutter : Enemy
                 {
                     if (!IsWending)
                     {
-                        if (rt.es.EnemyPositions[MyNumber].GetComponent<EnemyPosition>().TrashParts.Count == 0)
+                        if (rt.es.EnemyPositions[EnemyPlace].GetComponent<EnemyPosition>().TrashParts.Count == 0)
                         {
                             MoveToFreePosition();
                         }
@@ -219,12 +219,12 @@ public class MetalCutter : Enemy
         }
     }
    
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
+        base.OnTakingDamage();
         if (!IsWending)
         {
-            PlayAnim("Taking damage", "TakeDamage");
+            PlayAnim("Taking damage", "OnTakingDamage");
         }
         
     }
@@ -252,7 +252,7 @@ public class MetalCutter : Enemy
     {
         if (!Pressed)
         {
-            DoDamageToPlayer(Damage);
+            DoDamageToPlayer(FinalDamage);
         }
         if (!IsShooting && !rt.nt.IsGgFhase && nfg.index != SliderDotType.End)
         {

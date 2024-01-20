@@ -36,10 +36,10 @@ public class Welder : Enemy
         }
        
     }
-    public override void TakeDamage()
+    public override void OnTakingDamage()
     {
-        base.TakeDamage();
-        PlayAnim("Taking Damage", "Take Damage");
+        base.OnTakingDamage();
+        PlayAnim("Taking FinalDamage", "Take FinalDamage");
     }
     public override void OnDeath()
     {
@@ -80,7 +80,7 @@ public class Welder : Enemy
         Destroy(tempGasBaloon, 0.3f);
         if (!Pressed)
         {
-            DoDamageToPlayer(Damage,0.3f);
+            DoDamageToPlayer(FinalDamage,0.3f);
         }
     }
    

@@ -59,7 +59,7 @@ public class UI_Effects : MonoBehaviour
     }
     public HealthBar CreateEnemyHealthBar(Enemy enemy)
     {
-        GameObject g = Instantiate(HealthBar, rt.es.EnemiesOnPositions[enemy.MyNumber].transform.position, rt.es.EnemiesOnPositions[enemy.MyNumber].transform.rotation);
+        GameObject g = Instantiate(HealthBar, rt.es.EnemiesOnPositions[enemy.EnemyPlace].transform.position, rt.es.EnemiesOnPositions[enemy.EnemyPlace].transform.rotation);
         g.transform.SetParent(gameObject.transform);
         g.SetActive(true);
         HealthBar bar = g.GetComponent<HealthBar>();
@@ -67,7 +67,7 @@ public class UI_Effects : MonoBehaviour
         bar.rt = rt;
         bar.MaxHP = enemy.MaxHealth;
         bar.Health = enemy.MaxHealth;
-        bar.EnemyPosition = enemy.MyNumber;
+        bar.EnemyPosition = enemy.EnemyPlace;
         return g.GetComponent<HealthBar>();
     }
 }
