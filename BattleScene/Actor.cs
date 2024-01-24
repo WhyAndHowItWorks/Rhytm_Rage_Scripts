@@ -1,16 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
-using static NoteTapper;
+
 /// <summary>
-/// Базовый класс всех объектов, которые могут реагировать на нажатие клавиш
+/// Basic class for all actors on the battlefield
 /// </summary>
 public class Actor : MonoBehaviour
 {
     public string description; // Описание этого актера
     /// <summary>
-    /// Реакция актера на действие с нотой
+    /// Reaction for NoteEvent
     /// </summary>
     /// <param name="Pressed"></param>
     /// <param name="nfg"></param>

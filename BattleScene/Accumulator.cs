@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class Accumulator : Enemy
 {
+    // CurrentNoteInfo
+    public NoteForGame CurrentNote;
     public bool deltapr;
 
-    public bool IsDischarging;
-    public float TimeBetweenDischarges;
-    public float delta;
+    // All For Charging/Discharging
     public int Charges
     {
         get { return charges; }
         set
         {
             int oldcharges = charges;
-            
+
             charges = value;
             if (oldcharges != charges)
             {
@@ -24,7 +24,7 @@ public class Accumulator : Enemy
                 {
                     CastModEffectWithPeriod(EffectType.ChargeDown, EnemyPlace);
                 }
-                else 
+                else
                 {
                     CastModEffectWithPeriod(EffectType.ChargeUp, EnemyPlace);
                 }
@@ -38,23 +38,23 @@ public class Accumulator : Enemy
                     else { BatteryCharges[i].SetActive(false); }
                 }
             }
-            
+
         }
     }
     public int charges;
-    public NoteForGame nfg;
-    public List<GameObject> BatteryCharges = new List<GameObject>();
-    
-
-    [Header("Все по разрядке аккумулятора")]
     public float TimeBetweenNotes;
+    public List<GameObject> BatteryCharges = new List<GameObject>();
+    public bool IsDischarging;
+    public float TimeBetweenDischarges;
+    public float delta;
 
+   
 
     public override void NoteAction(bool Pressed, NoteForGame nfg)
     {
         if (rt.nt.IsGgFhase && !Pressed )
         {
-            this.nfg = nfg;
+            CurrentNote = nfg;
             if (nfg.noteInfo.type == NoteType.SliderDot)
             {
                 DotsCheck();
@@ -65,23 +65,25 @@ public class Accumulator : Enemy
             }
         }
     }
+    public override void DotsAction()
+    {
+        Charges += DamageMultiplayer;
+    }
+    public override void LoadOptions()
+    {
+        base.LoadOptions();
+    }
     public new void Start()
     {
         IsDischarging = !rt.nt.IsGgFhase;
         base.Start();
-        rt.nt.PhaseChangedEvent += SwitchFhase;
+        rt.nt.PhaseChangedEvent += OnSwitchFhase;
         TimeBetweenDischarges = rt.tl.Bpm / 240f;
-       
     }
-    public void SwitchFhase(bool IsGGPhase)
-    {
-        IsDischarging = !IsGGPhase;
-        delta = 0;
-
-    }
+   
     public void Update()
     {
-        if (IsDischarging && Charges >0)
+        if (IsDischarging && Charges > 0)
         {
             if (!an.GetCurrentAnimatorStateInfo(0).IsName("Discharging"))
             {
@@ -102,37 +104,38 @@ public class Accumulator : Enemy
             }
         }
     }
+
+    #region Accumulator Abilities
     public void Discharge()
     {
-                             
-            bool[] LineClear = new bool[4];
-            for (int i = 0; i < LineClear.Length; i++)
+        bool[] LineClear = new bool[4];
+        for (int i = 0; i < LineClear.Length; i++)
+        {
+            LineClear[i] = true;
+        }
+        rt.ntgs.GameSelectArea.GetComponent<BoxCollider2D>().size = new Vector2(rt.ntgs.GameSelectArea.GetComponent<BoxCollider2D>().size.x, rt.tl.NoteSpeed / 8);
+        foreach (GameObject g in rt.ntgs.GameSelectArea.GetComponent<GameSelectArea>().NoteFound)
+        {
+            LineClear[g.GetComponent<NoteForGame>().noteInfo.Line] = false;
+        }
+        List<int> LineSelection = new List<int>();
+        List<int> ColorSelection = new List<int>();
+        for (int i = 0; i < 4; i++)
+        {
+            if (LineClear[i])
             {
-                LineClear[i] = true;
+                LineSelection.Add(i);
             }
-            rt.ntgs.GameSelectArea.GetComponent<BoxCollider2D>().size = new Vector2(rt.ntgs.GameSelectArea.GetComponent<BoxCollider2D>().size.x, rt.tl.NoteSpeed / 8);
-            foreach (GameObject g in rt.ntgs.GameSelectArea.GetComponent<GameSelectArea>().NoteFound)
+        }
+        if (LineSelection.Count > 0)
+        {
+            for (int i = 0; i < 8; i++)
             {
-                LineClear[g.GetComponent<NoteForGame>().noteInfo.Line] = false;
-            }
-            List<int> LineSelection = new List<int>();
-            List<int> ColorSelection = new List<int>();
-            for (int i = 0; i < 4; i++)
-            {
-                if (LineClear[i])
+                if (rt.es.EnemiesOnPositions[i] != null && rt.es.EnemiesOnPositions[i].GetComponent<Enemy>().UseNotes)
                 {
-                    LineSelection.Add(i);
+                    ColorSelection.Add(rt.es.EnemiesOnPositions[i].GetComponent<Enemy>().NoteColor);
                 }
             }
-            if (LineSelection.Count > 0)
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    if (rt.es.EnemiesOnPositions[i] != null && rt.es.EnemiesOnPositions[i].GetComponent<Enemy>().UseNotes)
-                    {
-                        ColorSelection.Add(rt.es.EnemiesOnPositions[i].GetComponent<Enemy>().NoteColor);
-                    }
-                }
             if (ColorSelection.Count > 0)
             {
                 int Line = LineSelection[UnityEngine.Random.Range(0, LineSelection.Count)];
@@ -158,42 +161,40 @@ public class Accumulator : Enemy
 
                 h.transform.position = new Vector3(h.transform.position.x, rt.ntgs.GameSelectArea.transform.position.y + 12, h.transform.position.z);
             }
-                
-            } 
+
+        }
     }
     public void Charge()
     {
         an.Play("Charging");
-        switch (nfg.noteInfo.Color)
+        switch (CurrentNote.noteInfo.Color)
         {
             case (0):
                 Charges += DamageMultiplayer;
                 break;
             case (1):
-                Charges += 2*DamageMultiplayer;
+                Charges += 2 * DamageMultiplayer;
                 break;
             case (2):
-                Charges += 2*DamageMultiplayer;
+                Charges += 2 * DamageMultiplayer;
                 break;
             case (3):
-                Charges += 4*DamageMultiplayer;
+                Charges += 4 * DamageMultiplayer;
                 break;
 
         }
     }
-    public override void LoadOptions()
+    #endregion
+
+    #region Case Methods
+    public void OnSwitchFhase(bool IsGGPhase)
     {
-        base.LoadOptions();
-    }
-    public override void DotsAction()
-    {
-        Charges += DamageMultiplayer;
-       
+        IsDischarging = !IsGGPhase;
+        delta = 0;
     }
     public override void OnBirth()
     {
         base.OnBirth();
-
     }
     public override void OnDeath()
     {
@@ -201,11 +202,11 @@ public class Accumulator : Enemy
         an.Play("Death");
     }
 
-   
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
         PlayAnim("Taking FinalDamage", "Take FinalDamage");
-
     }
+    #endregion
+
 }
