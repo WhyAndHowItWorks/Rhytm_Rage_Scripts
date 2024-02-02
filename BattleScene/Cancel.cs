@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Instrument for cancelling actions
+/// </summary>
 public class Cancel : MonoBehaviour
 {
+    //Admins
     public NoteTrack nt; 
     public EditorNoteFactory enf;
 
     public List<CancelComand> History = new List<CancelComand>();
-
+    //ComandTypes
     public GameObject CreateComand;
     public GameObject DeleteComand;
     public GameObject MoveComand;
@@ -25,10 +28,8 @@ public class Cancel : MonoBehaviour
                 History.RemoveAt(History.Count-1);
                 Destroy(g);
             }
-            
         }
     }
-
     public void ClearHistory()
     {
         foreach (CancelComand c in History)

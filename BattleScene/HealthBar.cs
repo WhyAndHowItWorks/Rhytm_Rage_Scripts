@@ -33,7 +33,7 @@ public class HealthBar : MonoBehaviour
         {
             shield_health = value;
             ShieldBar_text.text = shield_health.ToString();
-            if (shield_health == 0)
+            if (shield_health <= 0)
             {
                 ShieldBar.SetActive(false);
             }
@@ -51,9 +51,8 @@ public class HealthBar : MonoBehaviour
         get { return stackCount; }
         set 
         {
-            StackCountText.gameObject.SetActive(stackCount > 1);
             stackCount = value;
-
+            StackCountText.gameObject.SetActive(stackCount > 1);
             StackCountText.text = "x" + stackCount;
         }
     }

@@ -328,13 +328,10 @@ public class PlayerAbilities : Actor
     
     public void TakeDamage()
     {
-        
-
-
             CastEmoji(Emoji.Surprised);
             DamageTakes++;
             // Проигрывание анимации
-            PlayAnim("Taking FinalDamage", "Take_Damage");
+            PlayAnim("Taking Damage", "Take_Damage");
         
     }
 

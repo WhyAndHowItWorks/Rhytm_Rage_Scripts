@@ -103,7 +103,7 @@ public class LaserMark : Enemy
                         }
                     }
                 }
-                Debug.Log("Закончить стрельбу");
+                
                 IsShooting = false;
             }
             else
@@ -119,7 +119,7 @@ public class LaserMark : Enemy
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
-        PlayAnim("Taking FinalDamage", "OnTakingDamage");
+        PlayAnim("Taking Damage", "TakeDamage");
     }
     public override void OnDeath()
     {
@@ -133,15 +133,16 @@ public class LaserMark : Enemy
     {
         PlayAnim("Shooting", "Shoot");
         GameObject g = Instantiate(LaserEffect, LaserEffect.transform.position, LaserEffect.transform.rotation);
+        g.SetActive(true);
         LookAt2D(g, rt.pa.TargetPoint.position);
         Destroy(g, 0.2f);
     }
     public override void DotsAction()
     {
-            if (!Pressed)
-            {
-                DoDamageToPlayer(FinalDamage);
-            }
+        if (!Pressed)
+        {
+            DoDamageToPlayer(FinalDamage);
+        }
         if (!IsShooting && !rt.nt.IsGgFhase && nfg.index != SliderDotType.End)
         {
             IsShooting = true;

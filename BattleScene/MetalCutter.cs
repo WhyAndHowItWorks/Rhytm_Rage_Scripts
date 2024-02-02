@@ -17,7 +17,7 @@ public class MetalCutter : Enemy
                 {
                     PlayAnim("StartShooting");
                     LaserEffect.SetActive(true);
-                    LookAt2D(LaserEffect, rt.pa.TargetPoint.position);
+                    LaserEffect.GetComponent<LookingAt>().Target = rt.pa.TargetPoint.gameObject;
 
 
                 }
@@ -224,7 +224,7 @@ public class MetalCutter : Enemy
         base.OnTakingDamage();
         if (!IsWending)
         {
-            PlayAnim("Taking damage", "OnTakingDamage");
+            PlayAnim("Taking damage", "TakeDamage");
         }
         
     }
@@ -244,6 +244,7 @@ public class MetalCutter : Enemy
     {
         PlayAnim("Shoot", "Shoot");
         GameObject g = Instantiate(LaserEffect, LaserEffect.transform.position, LaserEffect.transform.rotation);
+        g.GetComponent<LookingAt>().Target = rt.pa.TargetPoint.gameObject;
         g.SetActive(true);
         LookAt2D(g, rt.pa.TargetPoint.position);
         Destroy(g, 0.2f);

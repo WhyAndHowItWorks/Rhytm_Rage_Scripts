@@ -41,7 +41,16 @@ public abstract class Enemy : BattleParticipants
     // Damage
     public float FinalDamage 
     {
-        get { return damage * DamageMultiplayer; }
+        get {
+            if (DamageMultiplayer > 1)
+            {
+                return damage * DamageMultiplayer;
+            }
+            else 
+            {
+                return damage;
+            }
+        }
         set {
             float olddamage = damage;
             damage = value;

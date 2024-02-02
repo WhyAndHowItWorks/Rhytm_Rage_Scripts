@@ -5,6 +5,7 @@ using UnityEngine;
 public class Barrier : Enemy
 {
     public GameObject BoxDestroyEffect;
+    public Transform HealthBarDot;
     public override void DotsAction()
     {
         
@@ -18,5 +19,9 @@ public class Barrier : Enemy
         base.OnDeath();
         GameObject g = Instantiate(BoxDestroyEffect, transform.position, transform.rotation);
         Destroy(g);
+    }
+    public override void OnEnemyArrived()
+    {
+        HealthBar.transform.position = HealthBarDot.position;
     }
 }

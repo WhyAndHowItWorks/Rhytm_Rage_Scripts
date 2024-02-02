@@ -1,19 +1,9 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 
 public class BOSS : Enemy
 {
-    public bool IsDead;
-    [Header("Все про Босса")]
-
-    public int[] DotCount = new int[4];
-    public int[] MaxDotCount = new int[4];
-
-    public int oldsliderColor;
+    //Work with sliders
     public SliderForGame LeadSlider
     {
         get { return leadSlider; }
@@ -53,8 +43,12 @@ public class BOSS : Enemy
         }
     }
     public SliderForGame leadSlider;
+    public int oldsliderColor;
+    public int[] DotCount = new int[4];
+    public int[] MaxDotCount = new int[4];
 
-    public BossState State
+    //States of Enemy
+    BossState State
        {
         get { return state; }
         set 
@@ -79,46 +73,44 @@ public class BOSS : Enemy
             }
         }
         }
-    public BossState state;
+    [SerializeField] BossState state;
+    public bool IsDead;
 
-    // Все про обычные ноты
-    public int[] DamageForColors = new int[4];
-    public float[] SliderCheckDelay = new float[4];
-
-    public int BladeCharges;
-    public int DamagePerCharge;
-
-    public float ShieldPerNote;
-    public GameObject ShieldPole;
-
+    //Current Note Info
     public NoteForGame deltanfg;
     public bool Pressed;
 
-    public bool BladeAttack;
-    public GameObject SmallBladeAttack;
-    public GameObject BigBladeAttack;
-
-    public GameObject BladeAttackShootPosition;
-
+    //Health
     public Transform HealthBarSpawnPoint;
+    //Shielding
+    public float ShieldPerNote;
+    public GameObject ShieldPole;
 
-    public GameObject BladeEffect;
-    public GameObject BigBladeEffect;
-    public GameObject BladeEffectPlaceDot;
-
-
+    // Common for Attacks
+    public int[] DamageForColors = new int[4];
+    //Gun Attack
     public GameObject BossGunEffect;
     public GameObject BossGunEffectPlaceDot;
-
-    public GameObject BossShotGunEffect;
-    public GameObject BossShotGunEffectPlaceDot;
-
-    public GameObject BossLaserGunEffect;
-    public GameObject BossLaserGunEffectPlaceDot;
-
-
+    //Shotgun Attack
+    public GameObject BossShotgunEffect;
+    public GameObject BossShotgunEffectPlaceDot;
+    //Lasergun Attack
+    public GameObject BossLasergunEffect;
+    public GameObject BossLasergunEffectPlaceDot;
+    //Blade Attack
+    public GameObject BladeEffectPlaceDot;
+    public GameObject BladeAttackShootPosition;
+    //Small Blade Attack
+    public GameObject SmallBladeAttack;
+    public GameObject SmallBladeEffect;
+    //Big Blade Attack
+    public int BladeCharges;
+    public int DamagePerCharge;
+    public GameObject BigBladeEffect;
+    public GameObject BigBladeAttack;
     
-   
+
+
     public override void NoteAction(bool Pressed, NoteForGame nfg)
     {
         if (!IsDead)
@@ -126,13 +118,13 @@ public class BOSS : Enemy
             this.Pressed = Pressed;
             deltanfg = nfg;
 
-            if (!rt.nt.IsGgFhase) // Если фаза противников
+            if (!rt.nt.IsGgFhase) 
             {
-                if (nfg.noteInfo.type == NoteType.Note) // Если обычная нота
+                if (nfg.noteInfo.type == NoteType.Note) 
                 {
                     NoteColorAction(nfg, nfg.noteInfo.Color);
                 }
-                if (nfg.noteInfo.type == NoteType.SliderDot) // Если точка слайдера
+                if (nfg.noteInfo.type == NoteType.SliderDot) 
                 {
                     int Color = nfg.noteInfo.Color;
                     DotCount[Color]++;
@@ -143,13 +135,13 @@ public class BOSS : Enemy
                     }
                 }
             }
-            else // Повышение щита при промахе
+            else 
             {
-                if (nfg.noteInfo.type == NoteType.Note) // Если обычная нота
+                if (nfg.noteInfo.type == NoteType.Note) 
                 {
                     ShieldChargeAction(nfg.noteInfo.Color);
                 }
-                if (nfg.noteInfo.type == NoteType.SliderDot) // Если точка слайдера
+                if (nfg.noteInfo.type == NoteType.SliderDot) 
                 {
                     int Color = nfg.noteInfo.Color;
                     DotCount[Color]++;
@@ -159,131 +151,57 @@ public class BOSS : Enemy
                         ShieldChargeAction(Color);
                     }
                 }
-
             }
         }
     }
-
-    public new void Start()
+    public override void DotsAction()
     {
-        base.Start();
-        rt.nt.SliderActionEvent += SliderAction;
-        rt.nt.PhaseChangedEvent += PhaseChangeAction;
-       
-
-    }
-
-    public void Update()
-    {
-
-
-        BossLaserGunEffect.transform.position = BossLaserGunEffectPlaceDot.transform.position;
-        LookAt2D(BossLaserGunEffect, rt.pa.TargetPoint.transform.position);
-
-        BossShotGunEffect.transform.position = BossShotGunEffectPlaceDot.transform.position;
-        LookAt2D(BossShotGunEffect, rt.pa.TargetPoint.transform.position);
-
-        BossGunEffect.transform.position = BossGunEffectPlaceDot.transform.position;
-        LookAt2D(BossGunEffect, rt.pa.TargetPoint.transform.position);
-
-        BigBladeEffect.transform.position = BladeEffectPlaceDot.transform.position;
-        BigBladeEffect.transform.rotation = BladeEffectPlaceDot.transform.rotation;
-        BladeEffect.transform.position = BladeEffectPlaceDot.transform.position;
-        BladeEffect.transform.rotation = BladeEffectPlaceDot.transform.rotation;
-
-        if (State == BossState.Slider && an.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-        {
-            SliderAnimation();
-        }
-        //Добавить спавн эффектов к анимациям
+        // not used because this enemy has many colors for sliders
     }
     public override void LoadOptions()
     {
-
         SerializeOptions so = rt.oh.so;
         int[] delta = new int[4] { so.PistolDamage, so.ShotgunDamage, so.LaserDamage, so.BladeDamage };
         DamageForColors = delta;
         health = so.BossHP;
         DamagePerCharge = so.BossPlusDamage;
         ShieldPerNote = so.BossPlusShield;
-
     }
-    public override void DotsAction()
+
+    public new void Start()
     {
-        
+        base.Start();
+        rt.nt.SliderActionEvent += SliderAction;
+        rt.nt.PhaseChangedEvent += OnPhaseChangeAction;
     }
-    public void PhaseChangeAction(bool IsGGPhase)
+
+    public void Update()
     {
-        if (IsGGPhase) // Если фаза ГГ
-        {
-            LeadSlider = null;
-        }
-        else // Если фаза противников
-        {
-            TryToFindSlider();
-        }
-    }
-    public void SliderAction(bool StartOrEnd, NoteForGame nfg)
-    {
-        if (!rt.nt.IsGgFhase)
-        {
-        
-        if (StartOrEnd) // если начался новый слайдер
-        {
-            switch (State)
-            {
-                case (BossState.Idle): // Если покой
-                    LeadSlider = (SliderForGame)nfg;
+        //Bindings for animations to work correctly
+        BossLasergunEffect.transform.position = BossLasergunEffectPlaceDot.transform.position;
+        LookAt2D(BossLasergunEffect, rt.pa.TargetPoint.transform.position);
 
-                    break;
-                case (BossState.Slider): // Если Слайдер
-                    LeadSlider = (SliderForGame)nfg;
-                    break;
-                case (BossState.BladeSlider):
+        BossShotgunEffect.transform.position = BossShotgunEffectPlaceDot.transform.position;
+        LookAt2D(BossShotgunEffect, rt.pa.TargetPoint.transform.position);
 
-                    break;
-            }
+        BossGunEffect.transform.position = BossGunEffectPlaceDot.transform.position;
+        LookAt2D(BossGunEffect, rt.pa.TargetPoint.transform.position);
 
-        }
-        else
+        BigBladeEffect.transform.position = BladeEffectPlaceDot.transform.position;
+        BigBladeEffect.transform.rotation = BladeEffectPlaceDot.transform.rotation;
+        SmallBladeEffect.transform.position = BladeEffectPlaceDot.transform.position;
+        SmallBladeEffect.transform.rotation = BladeEffectPlaceDot.transform.rotation;
+
+        if (State == BossState.Slider && an.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
-            if (nfg == LeadSlider)
-            {
-                TryToFindSlider();
-            }
-
+            SliderAnimation();
         }
     }
-       
-               
-    }
-    public void TryToFindSlider() // Если слайдер закончился, то ищет новый. Отдает приоритет зеленым
-    {
 
-        SliderForGame delta = null;
-        SliderForGame Blade = null;
-        for (int i = 0; i < 4; i++)
-        {
-            if (rt.nt.sliderInfo[i] != null)
-            {
-                delta = rt.nt.sliderInfo[i];
-
-            }
-            if (rt.nt.sliderInfo[i] != null && rt.nt.sliderInfo[i].noteInfo.Color == 3)
-            {
-                Blade = rt.nt.sliderInfo[i];
-            }
-        }
-        if (Blade == null)
-        {
-            LeadSlider = delta;
-        }
-        else { LeadSlider = Blade; }
-        
-    }
+    #region Abilities
     public void NoteColorAction(NoteForGame nfg, int Color)
     {
-        if (State == BossState.BladeSlider) // Если лезвие, то зарядка меча
+        if (State == BossState.BladeSlider)
         {
             switch (Color)
             {
@@ -301,7 +219,7 @@ public class BOSS : Enemy
                     break;
             }
         }
-        else // Если стоит или слайдер, то анимация стрельбы
+        else
         {
             switch (Color)
             {
@@ -319,46 +237,15 @@ public class BOSS : Enemy
                     PlayAnim("Attack_Blade", "Shoot_Blade");
                     break;
             }
-            //Вкид дамага при промахе
+            // Damage on miss
             if (!Pressed && Color != 3)
             {
                 DoDamageToPlayer(DamageForColors[Color]);
             }
         }
-            
-           
-        
-      
-    }
-    public void SmallBladeAttackA(NoteForGame nfg)
-    {    
-        // Создать волну
-        GameObject g = Instantiate(SmallBladeAttack, BladeAttackShootPosition.transform.position, BladeAttackShootPosition.transform.rotation);
-        // Привязать действие к ноте на её уничтожение, а также сказать ей её урон
-        int FoundNote = rt.nam.FoundNoteWithTime(nfg.noteInfo, 3f);
-        
-
-
-        float f = rt.nam.TimeFromNowToNote(FoundNote);
-        if (FoundNote == nfg.noteInfo.IdInTrack || f < 0.3f)
-        {
-            
-            if (!Pressed)
-            {
-                DoDamageToPlayer(DamageForColors[3], 0.3f);
-            }
-            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / 0.3f;
-        }
-        else {
-            rt.nam.AttachModToNote(FoundNote, new BossProjectileMod(), new object[] { this, g, (float)DamageForColors[3] });
-           
-            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / (f);
-        }
-        
     }
     public void ShieldChargeAction(int Color)
     {
-        Debug.Log("Заряд");
         if (!Pressed)
         {
             switch (Color)
@@ -378,7 +265,162 @@ public class BOSS : Enemy
             }
         }
     }
+    #endregion
+    #region Case Methods
+    public void OnPhaseChangeAction(bool IsGGPhase)
+    {
+        if (IsGGPhase)
+        {
+            LeadSlider = null;
+        }
+        else
+        {
+            TryToFindSlider();
+        }
+    }
+    public void SliderAction(bool StartOrEnd, NoteForGame nfg)
+    {
+        if (!rt.nt.IsGgFhase)
+        {
 
+            if (StartOrEnd) // если начался новый слайдер
+            {
+                switch (State)
+                {
+                    case (BossState.Idle): // Если покой
+                        LeadSlider = (SliderForGame)nfg;
+
+                        break;
+                    case (BossState.Slider): // Если Слайдер
+                        LeadSlider = (SliderForGame)nfg;
+                        break;
+                    case (BossState.BladeSlider):
+
+                        break;
+                }
+            }
+            else
+            {
+                if (nfg == LeadSlider)
+                {
+                    TryToFindSlider();
+                }
+            }
+        }
+    }
+    public override void OnShielded()
+    {
+        ShieldPole.GetComponent<Animator>().SetTrigger("BLINK");
+    }
+    public override void OnTakingDamage()
+    {
+        if (!IsDead)
+        {
+            base.OnTakingDamage();
+            if (an.GetCurrentAnimatorStateInfo(0).IsName("Taking damage_1"))
+            {
+                an.SetTrigger("TakeDamage");
+            }
+            else { an.Play("Taking damage_1"); }
+        }
+    }
+    public override void OnDeath()
+    {
+        Destroy(gameObject, EndDeathTime);
+        SpawnDeathEffect(DeathEffectSpawnPoint);
+
+        rt.es.DoEnemyEvent(this, EnemyAction.Died);
+        IsInvisible = true;
+
+        an.Play("Death");
+        IsDead = true;
+        rt.nt.SliderActionEvent -= SliderAction;
+        rt.nt.PhaseChangedEvent -= OnPhaseChangeAction;
+    }
+    public override void OnEnemyArrived()
+    {
+        HealthBar.transform.position = HealthBarSpawnPoint.position;
+        HealthBar.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+    }
+
+    #endregion
+    #region Usefull Methods
+    
+    public void SmallBladeAttackA(NoteForGame nfg)
+    {
+        // Создать волну
+        GameObject g = Instantiate(SmallBladeAttack, BladeAttackShootPosition.transform.position, BladeAttackShootPosition.transform.rotation);
+        // Привязать действие к ноте на её уничтожение, а также сказать ей её урон
+        int FoundNote = rt.nam.FoundNoteWithTime(nfg.noteInfo, 3f);
+        float f = rt.nam.TimeFromNowToNote(FoundNote);
+        if (FoundNote == nfg.noteInfo.IdInTrack || f < 0.3f)
+        {
+
+            if (!Pressed)
+            {
+                DoDamageToPlayer(DamageForColors[3], 0.3f);
+            }
+            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / 0.3f;
+        }
+        else
+        {
+            rt.nam.AttachModToNote(FoundNote, new BossProjectileMod(), new object[] { this, g, (float)DamageForColors[3] });
+
+            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / (f);
+        }
+
+    }
+    public void CastWaveAttack(NoteForGame nfg)
+    {
+
+        // Создать волну
+        GameObject g = Instantiate(BigBladeAttack, BladeAttackShootPosition.transform.position, BladeAttackShootPosition.transform.rotation);
+        // Привязать действие к ноте на её уничтожение, а также сказать ей её урон
+
+        int FoundNote = rt.nam.FoundNoteWithTime(nfg.noteInfo, 3f);
+        float Damage = DamageForColors[3] + BladeCharges * DamagePerCharge;
+        BladeCharges = 0;
+        // Отправить её в ГГ
+        float f = rt.nam.TimeFromNowToNote(FoundNote);
+
+        if (FoundNote == nfg.noteInfo.IdInTrack || f < 0.3f)
+        {
+
+            if (!Pressed)
+            {
+                DoDamageToPlayer(Damage, 0.3f);
+
+            }
+            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / 0.3f;
+        }
+        else
+        {
+            rt.nam.AttachModToNote(FoundNote, new BossProjectileMod(), new object[] { this, g, Damage });
+            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / f;
+        }
+    }
+    public void TryToFindSlider()
+    {
+        SliderForGame delta = null;
+        SliderForGame Blade = null;
+        for (int i = 0; i < 4; i++)
+        {
+            if (rt.nt.sliderInfo[i] != null)
+            {
+                delta = rt.nt.sliderInfo[i];
+
+            }
+            if (rt.nt.sliderInfo[i] != null && rt.nt.sliderInfo[i].noteInfo.Color == 3)
+            {
+                Blade = rt.nt.sliderInfo[i];
+            }
+        }
+        if (Blade == null)
+        {
+            LeadSlider = delta;
+        }
+        else { LeadSlider = Blade; }
+    }
     public void SliderAnimation()
     {
         switch (leadSlider.noteInfo.Color)
@@ -397,85 +439,9 @@ public class BOSS : Enemy
                 break;
         }
     }
-    
+    #endregion
 
-    public void CastWaveAttack(NoteForGame nfg)
-    {
-       
-        // Создать волну
-        GameObject g = Instantiate(BigBladeAttack, BladeAttackShootPosition.transform.position, BladeAttackShootPosition.transform.rotation);
-        // Привязать действие к ноте на её уничтожение, а также сказать ей её урон
-        
-        int FoundNote = rt.nam.FoundNoteWithTime(nfg.noteInfo, 3f);
-        float Damage = DamageForColors[3] + BladeCharges * DamagePerCharge;
-        BladeCharges = 0;
-        // Отправить её в ГГ
-        float f = rt.nam.TimeFromNowToNote(FoundNote);
-       
-        if (FoundNote == nfg.noteInfo.IdInTrack || f < 0.3f)
-        {
-
-            if (!Pressed)
-            {
-                DoDamageToPlayer(Damage, 0.3f);
-                
-            }
-            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / 0.3f;
-        }
-        else
-        {     
-            rt.nam.AttachModToNote(FoundNote, new BossProjectileMod(), new object[] { this, g, Damage });
-            g.GetComponent<ProjectileMover>().StepPerSecond = (rt.pa.TargetPoint.transform.position - BladeAttackShootPosition.transform.position) / f;
-        }
-    }
-
-
-    
-    public override void OnShielded()
-    {
-        // Спавн эффекта щита
-        ShieldPole.GetComponent<Animator>().SetTrigger("BLINK");
-    }
-    
-    public override void OnTakingDamage()
-    {
-        if (!IsDead)
-        {
-
-
-            base.OnTakingDamage();
-            if (an.GetCurrentAnimatorStateInfo(0).IsName("Taking damage_1"))
-            {
-                an.SetTrigger("OnTakingDamage");
-            }
-            else { an.Play("Taking damage_1"); }
-        }
-    }
-    public override void OnDeath()
-    {
-        Destroy(gameObject, EndDeathTime);
-        SpawnDeathEffect(DeathEffectSpawnPoint);
-       
-        rt.es.DoEnemyEvent(this, EnemyAction.Died);
-        IsInvisible = true;
-        
-        an.Play("Death");
-        IsDead = true;
-        rt.nt.SliderActionEvent -= SliderAction;
-        rt.nt.PhaseChangedEvent -= PhaseChangeAction;
-    }
-    
-        
-    
-    public override void OnEnemyArrived()
-    {
-        HealthBar.transform.position = HealthBarSpawnPoint.position;
-        HealthBar.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-    }
-
-
-
-    public enum BossState 
+    enum BossState 
     {
         Idle,
         Slider,

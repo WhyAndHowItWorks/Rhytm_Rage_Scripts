@@ -205,7 +205,7 @@ public class Accumulator : Enemy
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
-        PlayAnim("Taking FinalDamage", "Take FinalDamage");
+        PlayAnim("Taking Damage", "Take Damage");
     }
     #endregion
 

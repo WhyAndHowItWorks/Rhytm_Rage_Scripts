@@ -205,7 +205,7 @@ public class Polisher : Enemy
       base.OnTakingDamage();
       if (!IsPolishing)
       {
-      PlayAnim("Taking damage", "Take FinalDamage");
+      PlayAnim("Taking damage", "Take Damage");
       }
         
 

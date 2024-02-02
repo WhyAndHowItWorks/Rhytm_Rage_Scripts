@@ -39,7 +39,7 @@ public class Welder : Enemy
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
-        PlayAnim("Taking FinalDamage", "Take FinalDamage");
+        PlayAnim("Taking Damage", "Take Damage");
     }
     public override void OnDeath()
     {
@@ -75,6 +75,10 @@ public class Welder : Enemy
         an.Play("Gas_Baloon_Throw");
         GasBaloonTaken = false;
         GasBaloonHandler.transform.DetachChildren();
+        if (!tempGasBaloon.GetComponent<Gas_Baloon>().IsActivated)
+        {
+            tempGasBaloon.GetComponent<Gas_Baloon>().IsActivated = true;
+        }
         tempGasBaloon.AddComponent<ProjectileMover>();
         tempGasBaloon.GetComponent<ProjectileMover>().SetDirectionAndTime(GasBaloonHandler.transform.position, rt.pa.TargetPoint.position,0.3f,GasBaloonHandler);
         Destroy(tempGasBaloon, 0.3f);

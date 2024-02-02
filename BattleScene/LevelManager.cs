@@ -11,6 +11,8 @@ public class LevelManager : MonoBehaviour
     public List<string> LevelPath = new List<string>();
     public List<string> MusicPath = new List<string>();
 
+    public List<AudioClip> musics = new List<AudioClip>();
+
     public void Start()
     {
         LoadLevels();
@@ -20,10 +22,11 @@ public class LevelManager : MonoBehaviour
     public void LoadLevels() // Прочтение базовых уровней
     {
         string mainpath = Application.streamingAssetsPath;
+        
         StoryLevel.Clear();
         for (int i = 0; i < LevelPath.Count; i++)
         {
-           StoryLevel.Add( LoadLevel(mainpath + MusicPath[i], mainpath + LevelPath[i]));
+           StoryLevel.Add(LoadLevel(musics[i], mainpath + LevelPath[i]));
         }
        
     }
@@ -34,16 +37,26 @@ public class LevelManager : MonoBehaviour
         temp.soundPath = SoundPath;
         temp.TrackPath = TrackPath;
         StreamReader sr = new StreamReader(TrackPath);
-        temp.LevelName = sr.ReadLine();     
+        temp.LevelName = sr.ReadLine();
         temp.LoadLevel();
-        
-        
+        sr.Close();
+        return temp;
+    }
+    public Level LoadLevel(AudioClip au, string TrackPath)
+    {
+        GameObject level = Instantiate(EmptyLevel, transform.position, transform.rotation);
+        Level temp = level.GetComponent<Level>();
+        temp.audioClip = au;
+        temp.TrackPath = TrackPath;
+        StreamReader sr = new StreamReader(TrackPath);
+        temp.LevelName = sr.ReadLine();
         sr.Close();
         return temp;
     }
     public void LoadCustomLevels()
     {
         string mainpath = Application.streamingAssetsPath + "\\Maps";
+        
         DirectoryInfo MapsDir = new DirectoryInfo(mainpath);
         DirectoryInfo[] Maps = MapsDir.GetDirectories();
         for (int i = 0; i < Maps.Length; i++)

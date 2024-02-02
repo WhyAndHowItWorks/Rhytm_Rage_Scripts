@@ -50,7 +50,7 @@ public class Loader : Enemy
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
-        PlayAnim("Taking damage", "OnTakingDamage");
+        PlayAnim("Taking damage", "TakeDamage");
 
 
     }

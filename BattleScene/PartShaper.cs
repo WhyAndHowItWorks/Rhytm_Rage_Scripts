@@ -63,6 +63,6 @@ public class PartShaper : Enemy
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
-        PlayAnim("Taking damage", "Taking FinalDamage");
+        PlayAnim("Taking damage", "Taking Damage");
     }
 }

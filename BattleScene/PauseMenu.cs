@@ -63,6 +63,8 @@ public class PauseMenu : MonoBehaviour
         rt.sct.LoadScene(1, false);
         rt.st.IsPaused = false;
         rt.st.CancelUnpause();
+        rt.st.ChangeText("Restarting...");
+        
     }
     public void Quit()
     {

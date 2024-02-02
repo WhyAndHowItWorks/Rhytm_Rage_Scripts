@@ -6,9 +6,10 @@ using UnityEngine.UI;
 
 public class ChooseLevelPanel : MonoBehaviour
 {
+    [Header ("Admins")]
     public RunProgressHandler rp;
     public SceneTravel st;
-    
+    public MainOptions mo;
     public int Level
     {
         get { return rp.StoryLevel; }
@@ -21,26 +22,46 @@ public class ChooseLevelPanel : MonoBehaviour
             
         }
     }
+
     [Header("UI")]
+    //Continue Button
     public Text ContinueBText;
     public Button ContinueB;
+    //Start Button
     public Text StartBText;
     public Button StartB;
+    //EndTitleButton
     public Text EndTitleBText;
     public Button EndTitleB;
+    //Customs
     public Dropdown ChooseCustomLevel;
+    public Text PlayCustomButtonText;
+    //Menu Transition
     public GameObject MainLevelPanel;
     public GameObject MainMenuPanel;
-    public MainOptions mo;
-    public Text PlayCustomButtonText;
-
-    public Color LockedColor = new Color(255, 0, 0, 255);
-    public Color UnlockedColor = new Color(0, 255, 238, 255);
+    //Button Colors
+    [SerializeField] Color LockedColor = new Color(255, 0, 0, 255);
+    [SerializeField] Color UnlockedColor = new Color(0, 255, 238, 255);
 
     public void Start()
     {
         Invoke("LateStart", 0.1f);
     }
+   
+    public void LateStart()
+    {
+        rp = GameObject.Find("Хранитель настроек").GetComponent<RunProgressHandler>();
+        st = GameObject.Find("Хранитель настроек").GetComponent<SceneTravel>();
+        LevelManager lm = GameObject.Find("Хранитель настроек").GetComponent<LevelManager>();
+        List<string> delta = new List<string>();
+        for (int i = 0; i < lm.CustomLevel.Count; i++)
+        {
+            delta.Add(lm.CustomLevel[i].LevelName);
+        }
+        ChooseCustomLevel.AddOptions(delta);
+    }
+
+    #region Close/Open Panel Acions
     public void OpenPlayLevelPanel()
     {
         if (mo.Doors.IsActive)
@@ -48,11 +69,10 @@ public class ChooseLevelPanel : MonoBehaviour
             Invoke("OpenPanel", 0.5f);
             mo.Doors.DoorsAnim();
         }
-        else 
+        else
         {
             OpenPanel();
         }
-        
     }
     public void OpenPanel()
     {
@@ -72,23 +92,6 @@ public class ChooseLevelPanel : MonoBehaviour
             EndTitleB.enabled = false;
         }
     }
-    public void ClosePanel()
-    {
-        MainMenuPanel.SetActive(true);
-        MainLevelPanel.SetActive(false);
-    }
-    public void LateStart()
-    {
-        rp = GameObject.Find("Хранитель настроек").GetComponent<RunProgressHandler>();
-        st = GameObject.Find("Хранитель настроек").GetComponent<SceneTravel>();
-        LevelManager lm = GameObject.Find("Хранитель настроек").GetComponent<LevelManager>();
-        List<string> delta = new List<string>();
-        for (int i = 0; i < lm.CustomLevel.Count; i++)
-        {
-            delta.Add(lm.CustomLevel[i].LevelName);
-        }
-        ChooseCustomLevel.AddOptions(delta);
-    }
     public void CloseLevelPanel()
     {
         if (mo.Doors.IsActive)
@@ -100,13 +103,18 @@ public class ChooseLevelPanel : MonoBehaviour
         {
             ClosePanel();
         }
-
-
     }
+    void ClosePanel()
+    {
+        MainMenuPanel.SetActive(true);
+        MainLevelPanel.SetActive(false);
+    }
+    #endregion
+
+    #region UI_Event_Actions
 
     public void GoFromBegin()
     {
-
         Level = 0;
         rp.IsCustomLevel = false;
         rp.WeaponStartLevels = new int[] { 0, 0, 0, 0 };
@@ -119,7 +127,6 @@ public class ChooseLevelPanel : MonoBehaviour
         rp.StoryLevel = Level;
         Play();
     }
-    
     public void Play()
     {
         st.LoadScene(1, true);
@@ -147,7 +154,7 @@ public class ChooseLevelPanel : MonoBehaviour
             rp.IsCustomLevel = true;
             Play();
         }
-        
     }
+    #endregion
 
 }

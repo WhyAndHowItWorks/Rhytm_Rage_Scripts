@@ -37,6 +37,7 @@ public class Packer : Enemy
     public override void LoadOptions()
     {
         base.LoadOptions();
+        
     }
     public override void DotsAction()
     {
@@ -69,7 +70,7 @@ public class Packer : Enemy
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
-        PlayAnim("Taking FinalDamage", "TakingDamage");
+        PlayAnim("Taking Damage", "TakingDamage");
     }
 
 }

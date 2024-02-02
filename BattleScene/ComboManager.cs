@@ -1,20 +1,22 @@
-using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class ComboManager : MonoBehaviour
 {
+    //Admins
+    public Router rt;
+
+    //Slider Options
     public float SliderDotMultiple;
     public float sliderDotdeltaCombo;
-
     public float SliderDotDeltaCombo
     {
         get { return sliderDotdeltaCombo; }
-        set 
+        set
         {
             if (value > 1 || value < -1)
             {
@@ -22,16 +24,20 @@ public class ComboManager : MonoBehaviour
                 Combo += Mathf.FloorToInt(value);
                 sliderDotdeltaCombo = value - Mathf.FloorToInt(value);
             }
-            else {
+            else
+            {
 
-                sliderDotdeltaCombo = value; }
+                sliderDotdeltaCombo = value;
+            }
         }
     }
-    public int combo;
 
+    //Miss Values
     public int NoNoteButTapMultiple;
     public int NoNoteButTapLoseEnergy;
-    public int Combo 
+
+    //Combo Values
+    public int Combo
     {
         get { return combo; }
         set
@@ -41,8 +47,8 @@ public class ComboManager : MonoBehaviour
                 combo = value;
                 ComboChanged(combo);
             }
-           
-            Combo_Text.text =  combo.ToString()+"x";
+
+            Combo_Text.text = combo.ToString() + "x";
             if (combo >= 50 && deltaFireEffect == null)
             {
                 deltaFireEffect = Instantiate(FireEffect, DotForFireEffect.position, DotForFireEffect.rotation);
@@ -54,26 +60,21 @@ public class ComboManager : MonoBehaviour
             }
         }
     }
+    public int combo;
     public int NeededCombo;
-    public Router rt;
 
-    ///////////// Столбцы
-    //Главный столбец
+    //Color Columns
     public Column MainColumn;
     public Column[] ColorColumns = new Column[4];
 
-    
-    public float MinValueToAdd;
-    public float MaxValueToAdd;
-    public float MinValueToTake;
-    public float MaxValueToTake;
+    //Main Column Properties
     public float MainColumnEnergy
     {
         get { return MainColumn.tempValue; }
-        set 
+        set
         {
             float delta = value - MainColumn.tempValue;
-            if (delta > 0)  
+            if (delta > 0)
             {
                 if (delta > MaxValueToAdd)
                 {
@@ -83,7 +84,8 @@ public class ComboManager : MonoBehaviour
                 {
                     MainColumn.TempValue += MinValueToAdd;
                 }
-                else { 
+                else
+                {
                     MainColumn.TempValue = value;
                 }
                 if (value > MainColumn.MaxValue)
@@ -103,9 +105,10 @@ public class ComboManager : MonoBehaviour
                 {
                     MainColumn.TempValue -= MinValueToTake;
                 }
-                else {
-                   
-                    MainColumn.TempValue = value; 
+                else
+                {
+
+                    MainColumn.TempValue = value;
                 }
                 if (value < MainColumn.MinValue)
                 {
@@ -114,23 +117,45 @@ public class ComboManager : MonoBehaviour
             }
         }
     }
-
-
+    //Start Values
     public int MainColumnMax;
-    // Интерфейс
+    //Changing Values
+    public float MinValueToAdd;
+    public float MaxValueToAdd;
+    public float MinValueToTake;
+    public float MaxValueToTake;
+
+    //UI
     public TextMeshProUGUI Combo_Text;
     public Transform DotForFireEffect;
     public GameObject deltaFireEffect;
     public GameObject FireEffect;
     public NoteForGame nfg;
 
-    //События класса
+    //Class Events
     public delegate void ComboEvent(int Combo);
     public event ComboEvent ComboChanged;
 
-    /// <summary>
-    /// Была нажата нота
-    /// </summary>
+
+    public void Start()
+    {
+        rt.nt.NoteActedEvent += NoteAction;
+        MainColumn.MaxValue = MainColumnMax;
+        MainColumn.MinValue = 0;
+        MainColumn.TempValue = 50;
+    }
+    public void NoteAction(bool Pressed, NoteForGame nt)
+    {
+        nfg = nt;
+        if (Pressed)
+        {
+            NoteTap(nt);
+        }
+        else
+        {
+            NoteDontTap(nt);
+        }
+    }
     public void NoteTap(NoteForGame nt)
     {
         if (nt.noteInfo.type == NoteType.Note)
@@ -141,24 +166,12 @@ public class ComboManager : MonoBehaviour
         {
             SliderDotDeltaCombo += SliderDotMultiple;
         }
-        
+
         float temp = 1 + 0.05f * (combo - NeededCombo);
-       
+
         MainColumnEnergy += temp;
 
     }
-    public void ChangeColumnEnergy(float Energy)
-    {
-        
-        if (nfg != null)
-        {
-            rt.ws.Active_weapon[nfg.noteInfo.Color].CurrentEnergy += Energy;
-           
-        }
-    }
-    /// <summary>
-    /// Нота не была нажата и исчезла
-    /// </summary>
     public void NoteDontTap(NoteForGame nt)
     {
         if (nt.noteInfo.type == NoteType.Note)
@@ -169,47 +182,30 @@ public class ComboManager : MonoBehaviour
             }
             else { Combo--; }
         }
-        else if(nt.noteInfo.type == NoteType.SliderDot)
+        else if (nt.noteInfo.type == NoteType.SliderDot)
         {
             SliderDotDeltaCombo -= SliderDotMultiple;
         }
-        float temp =  1 - 0.05f * (combo - NeededCombo);
-       
+        float temp = 1 - 0.05f * (combo - NeededCombo);
+
         MainColumnEnergy -= temp;
-       
+
     }
-    /// <summary>
-    /// Было нажатие, но не было нажато не одной ноты
-    /// </summary>
     public void NoNoteButTap()
     {
         Combo -= NoNoteButTapMultiple;
-        
+
         MainColumn.TempValue -= NoNoteButTapLoseEnergy;
         rt.pa.Health -= 10;
         nfg = null;
     }
-
-    public void NoteAction(bool Pressed, NoteForGame nt)
+    public void ChangeColumnEnergy(float Energy)
     {
-        nfg = nt;
-        if (Pressed)
+        if (nfg != null)
         {
-            NoteTap(nt);
-        }
-        else 
-        {
-            NoteDontTap(nt);
+            rt.ws.Active_weapon[nfg.noteInfo.Color].CurrentEnergy += Energy;
+
         }
     }
 
-    
-    public void Start()
-    {
-        rt.nt.NoteActedEvent += NoteAction;
-        MainColumn.MaxValue = MainColumnMax;
-        MainColumn.MinValue = 0;
-        MainColumn.TempValue = 50;
-
-    }
 }

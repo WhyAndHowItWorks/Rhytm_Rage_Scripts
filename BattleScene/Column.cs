@@ -6,12 +6,7 @@ using UnityEngine.UI;
 
 public class Column : MonoBehaviour
 {
-    public float minValue;
-    public Text minValueText;
-    public float maxValue;
-    public Text maxValueText;
-    public float tempValue;
-   
+    //Min Value
     public float MinValue
     {
         get { return minValue; }
@@ -26,6 +21,9 @@ public class Column : MonoBehaviour
             UpdateColumn();
         }
     }
+    public float minValue;
+    public Text minValueText;
+    //Max Value
     public float MaxValue
     {
         get { return maxValue; }
@@ -40,6 +38,9 @@ public class Column : MonoBehaviour
             UpdateColumn();
         }
     }
+    public float maxValue;
+    public Text maxValueText;
+    //Temp Value
     public virtual float TempValue
     {
         get { return tempValue; }
@@ -61,20 +62,18 @@ public class Column : MonoBehaviour
             UpdateColumn();
         }
     }
-
-
-     float currentvelocity;
-
-    // Отображение
+    public float tempValue;
+    //Displaying
+    //Start Values
     public float TimeToChange;
-     public float TargetValue;
-    public Image image;
+    public Image FillImage;
+    //UpdateValues
+    float currentvelocity;
+    public float TargetValue;
     public bool IsChanging;
-    //
+    
 
 
-    
-    
     public void UpdateColumn()
     {
         TargetValue = (tempValue - minValue) / (maxValue - minValue);
@@ -84,9 +83,8 @@ public class Column : MonoBehaviour
     {
         if (IsChanging)
         {
-           //  image.fillAmount = Mathf.Lerp(oldValue, TargetValue, (TactSeconds.time-oldtime)/TimeToChange );
-            image.fillAmount = Mathf.SmoothDamp(image.fillAmount, TargetValue, ref currentvelocity, TimeToChange);
-            if (image.fillAmount  > TargetValue - 0.005f && image.fillAmount < TargetValue + 0.005f )
+            FillImage.fillAmount = Mathf.SmoothDamp(FillImage.fillAmount, TargetValue, ref currentvelocity, TimeToChange);
+            if (FillImage.fillAmount  > TargetValue - 0.005f && FillImage.fillAmount < TargetValue + 0.005f )
             {
                 IsChanging = false;
             }

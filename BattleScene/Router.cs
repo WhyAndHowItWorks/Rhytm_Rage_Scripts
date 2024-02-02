@@ -14,7 +14,6 @@ public class Router : MonoBehaviour
     public UI_Effects uie;
     public TrackLoder tl;
     public NoteActionManager nam;
-    public CameraEffect ce;
     public AudioSource au;
     public NoteGraffic ng;
     public OptionsHandler oh;

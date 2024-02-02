@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Conveyorist : Enemy
 {
-
+    //Current Note Info
     public bool deltapr;
+    //Shoot Properties
     public GameObject Projectile;
     public Transform LaunchPoint;
-
     public List<Sprite> ProjSkins = new List<Sprite>();
 
     public override void NoteAction(bool Pressed, NoteForGame nfg)
@@ -42,17 +42,6 @@ public class Conveyorist : Enemy
             DoDamageToPlayer(FinalDamage);
         }
     }
-    public override void OnBirth()
-    {
-        base.OnBirth();
-
-    }
-    public override void OnDeath()
-    {
-        base.OnDeath();
-        an.Play("Death");
-        IsInvisible = true;
-    }
     public override void LoadOptions()
     {
         base.LoadOptions();
@@ -63,9 +52,23 @@ public class Conveyorist : Enemy
         g.GetComponent<SpriteRenderer>().sprite = ProjSkins[Random.Range(0, ProjSkins.Count)];
         PlayAnim("Conveyor", "Shoot");
     }
+
+    #region Case Methods
+    public override void OnBirth()
+    {
+        base.OnBirth();
+    }
+    public override void OnDeath()
+    {
+        base.OnDeath();
+        an.Play("Death");
+        IsInvisible = true;
+    }
     public override void OnTakingDamage()
     {
         base.OnTakingDamage();
-        PlayAnim("Taking damage", "OnTakingDamage");
+        PlayAnim("Taking damage", "TakeDamage");
     }
+    #endregion
+
 }
